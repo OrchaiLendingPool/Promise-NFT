@@ -63,6 +63,9 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
+        ExecuteMsg::UpdateConfig { owner, pauser } => {
+            execute_update_config(deps, info, owner, pauser)
+        }
         ExecuteMsg::Mint {
             token_uri,
             extension,
@@ -98,6 +101,31 @@ pub fn reply(deps: DepsMut, _env: Env, msg: Reply) -> Result<Response, ContractE
         }
         _ => Err(ContractError::InvalidReplyId {}),
     }
+}
+
+fn execute_update_config(
+    deps: DepsMut,
+    info: MessageInfo,
+    owner: Option<Addr>,
+    pauser: Option<Addr>,
+) -> Result<Response, ContractError> {
+    let sender_raw = deps.api.addr_canonicalize(info.sender.as_str())?;
+    let mut config = CONFIG.load(deps.storage)?;
+
+    if sender_raw != config.owner {
+        return Err(ContractError::Unauthorized {});
+    }
+
+    if let Some(owner) = owner {
+        config.owner = deps.api.addr_canonicalize(owner.as_str())?;
+    }
+    if let Some(pauser) = pauser {
+        config.pauser = deps.api.addr_canonicalize(pauser.as_str())?;
+    }
+
+    CONFIG.save(deps.storage, &config)?;
+
+    Ok(Response::new().add_attribute("action", "update_config"))
 }
 fn execute_mint(
     deps: DepsMut,
@@ -139,11 +167,11 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
 }
 
 fn query_dynamic_attributes_nft_info(
-    deps: Deps,
-    env: Env,
-    owner: String,
+    _deps: Deps,
+    _env: Env,
+    _owner: String,
 ) -> StdResult<Vec<(String, String)>> {
-    Ok(vec![("lol".to_string(), "lmao".to_string())])
+    Ok(vec![("lmao".to_string(), "lmao".to_string())])
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]

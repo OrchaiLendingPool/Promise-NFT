@@ -19,6 +19,10 @@ pub enum ExecuteMsg {
         token_uri: Option<String>,
         extension: Metadata,
     },
+    UpdateConfig {
+        owner: Option<Addr>,
+        pauser: Option<Addr>,
+    },
 }
 
 #[cw_serde]
