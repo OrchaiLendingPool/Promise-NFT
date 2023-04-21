@@ -11,4 +11,7 @@ pub enum ContractError {
 
     #[error("Unauthorized")]
     Unauthorized {},
+
+    #[error("Invalid reply ID")]
+    InvalidReplyId {},
 }
