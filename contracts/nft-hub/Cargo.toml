@@ -41,6 +41,7 @@ serde             = { version = "1.0.103", default-features = false, features = 
 thiserror         = "1.0"
 cw-storage-plus   = { version = "1.0.1" } 
 cosmwasm-schema   = "1.2.0"
+cw721           = { version = "0.17.0"}
 cw721-base        = { version = "0.17.0", features = ["library"] }
 protobuf          = { version = "2", features = ["with-bytes"] }
 

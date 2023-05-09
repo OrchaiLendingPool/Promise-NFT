@@ -603,6 +603,7 @@ dependencies = [
  "cosmwasm-std",
  "cosmwasm-storage",
  "cw-storage-plus 1.0.1",
+ "cw721 0.17.0",
  "cw721-base 0.17.0",
  "promise_nft",
  "protobuf",
@@ -651,6 +652,8 @@ dependencies = [
  "cosmwasm-storage",
  "cw20",
  "cw20-base",
+ "cw721 0.17.0",
+ "cw721-base 0.17.0",
  "schemars",
  "serde",
 ]

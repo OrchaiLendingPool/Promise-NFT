@@ -102,7 +102,7 @@ pub mod entry {
     }
 
     #[entry_point]
-    pub fn query_all_delegations(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
+    pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         match msg {
             QueryMsg::Config {} => to_binary(&query_config(deps)?),
             QueryMsg::NftInfo { token_id } => to_binary(&query_nft_info(deps, env, token_id)?),

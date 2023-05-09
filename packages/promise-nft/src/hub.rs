@@ -11,17 +11,19 @@ pub struct InstantiateMsg {
     pub soulbound_nft_code_id: u64,
     pub nft_name: String,
     pub nft_symbol: String,
+    pub token_uri: Option<String>,
+    pub extension: Option<Metadata>,
 }
 
 #[cw_serde]
 pub enum ExecuteMsg {
-    Mint {
-        token_uri: Option<String>,
-        extension: Metadata,
-    },
+    Mint {},
     UpdateConfig {
         owner: Option<Addr>,
         pauser: Option<Addr>,
+    },
+    RegisterExternalContract {
+        sc_atom_promise_staking: Option<Addr>,
     },
 }
 
@@ -31,6 +33,21 @@ pub enum Cw20HookMsg {}
 #[cw_serde]
 pub enum QueryMsg {
     DynamicAttributesNftInfo { token_id: String },
+    NftInfo {},
+    Config {},
+    ExternalContract {},
+}
+
+#[cw_serde]
+pub struct ConfigResponse {
+    pub owner: Addr,
+    pub pauser: Addr,
+    pub soulbound_nft: Addr,
+}
+
+#[cw_serde]
+pub struct ExternalContractResponse {
+    pub sc_atom_promise_staking: Option<Addr>,
 }
 
 #[cw_serde]
