@@ -10,7 +10,7 @@ use protobuf::Message;
 use crate::{
     error::ContractError,
     response::MsgInstantiateContractResponse,
-    state::{Config, NftInfo, CONFIG, EXTERNAL_CONTRACT, NFT_INFO, TOKEN_ID},
+    state::{Config, ExternalContract, NftInfo, CONFIG, EXTERNAL_CONTRACT, NFT_INFO, TOKEN_ID},
 };
 use cw721_base::InstantiateMsg as Cw721InstantiateMsg;
 
@@ -53,6 +53,13 @@ pub fn instantiate(
         &NftInfo {
             token_uri: msg.token_uri,
             extension: msg.extension,
+        },
+    )?;
+
+    EXTERNAL_CONTRACT.save(
+        deps.storage,
+        &ExternalContract {
+            sc_atom_promise_staking: None,
         },
     )?;
 
@@ -195,6 +202,7 @@ fn execute_register_external_contract(
         );
     }
 
+    EXTERNAL_CONTRACT.save(deps.storage, &external_contract)?;
     Ok(Response::new().add_attribute("action", "register_external_contract"))
 }
 
