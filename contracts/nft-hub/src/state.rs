@@ -14,6 +14,7 @@ pub struct Config {
     pub owner: CanonicalAddr,
     pub pauser: CanonicalAddr,
     pub soulbound_nft: CanonicalAddr,
+    pub campaign_end: u64,
 }
 
 #[cw_serde]

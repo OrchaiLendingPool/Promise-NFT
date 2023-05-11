@@ -3,7 +3,7 @@ use cosmwasm_std::{Addr, Decimal, Uint128};
 
 #[cw_serde]
 pub enum ScAtomPromiseStakingVaultsQueryMsg {
-    Staker { staker: Addr },
+    Rewards { staker: Addr },
 }
 
 #[cw_serde]

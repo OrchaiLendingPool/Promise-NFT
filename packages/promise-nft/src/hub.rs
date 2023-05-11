@@ -13,6 +13,7 @@ pub struct InstantiateMsg {
     pub nft_symbol: String,
     pub token_uri: Option<String>,
     pub extension: Option<Metadata>,
+    pub campaign_end: u64,
 }
 
 #[cw_serde]
@@ -21,6 +22,7 @@ pub enum ExecuteMsg {
     UpdateConfig {
         owner: Option<Addr>,
         pauser: Option<Addr>,
+        campaign_end: Option<u64>,
     },
     RegisterExternalContract {
         sc_atom_promise_staking: Option<Addr>,
@@ -43,6 +45,7 @@ pub struct ConfigResponse {
     pub owner: Addr,
     pub pauser: Addr,
     pub soulbound_nft: Addr,
+    pub campaign_end: u64,
 }
 
 #[cw_serde]

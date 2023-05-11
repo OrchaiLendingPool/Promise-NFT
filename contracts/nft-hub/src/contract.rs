@@ -43,6 +43,7 @@ pub fn instantiate(
             owner: deps.api.addr_canonicalize(msg.owner.as_str())?,
             pauser: deps.api.addr_canonicalize(msg.pauser.as_str())?,
             soulbound_nft: CanonicalAddr::from(vec![]),
+            campaign_end: msg.campaign_end,
         },
     )?;
 
@@ -88,9 +89,11 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::UpdateConfig { owner, pauser } => {
-            execute_update_config(deps, info, owner, pauser)
-        }
+        ExecuteMsg::UpdateConfig {
+            owner,
+            pauser,
+            campaign_end,
+        } => execute_update_config(deps, info, owner, pauser, campaign_end),
         ExecuteMsg::Mint {} => execute_mint(deps, env, info),
         ExecuteMsg::RegisterExternalContract {
             sc_atom_promise_staking,
@@ -133,6 +136,7 @@ fn execute_update_config(
     info: MessageInfo,
     owner: Option<Addr>,
     pauser: Option<Addr>,
+    campaign_end: Option<u64>,
 ) -> Result<Response, ContractError> {
     let sender_raw = deps.api.addr_canonicalize(info.sender.as_str())?;
     let mut config = CONFIG.load(deps.storage)?;
@@ -147,14 +151,23 @@ fn execute_update_config(
     if let Some(pauser) = pauser {
         config.pauser = deps.api.addr_canonicalize(pauser.as_str())?;
     }
+    if let Some(campaign_end) = campaign_end {
+        config.campaign_end = campaign_end;
+    }
 
     CONFIG.save(deps.storage, &config)?;
 
     Ok(Response::new().add_attribute("action", "update_config"))
 }
-fn execute_mint(deps: DepsMut, _env: Env, info: MessageInfo) -> Result<Response, ContractError> {
+fn execute_mint(deps: DepsMut, env: Env, info: MessageInfo) -> Result<Response, ContractError> {
     let config = CONFIG.load(deps.storage)?;
     let nft_info = NFT_INFO.load(deps.storage)?;
+
+    if config.campaign_end < env.block.time.seconds() {
+        return Err(ContractError::Std(StdError::generic_err(
+            "This campaign has ended!",
+        )));
+    }
 
     let sender = info.sender.to_string();
     let soulbound_nft_contract = deps.api.addr_humanize(&config.soulbound_nft)?;
@@ -225,6 +238,7 @@ fn query_config(deps: Deps) -> StdResult<ConfigResponse> {
         owner: deps.api.addr_humanize(&config.owner)?,
         pauser: deps.api.addr_humanize(&config.pauser)?,
         soulbound_nft: deps.api.addr_humanize(&config.soulbound_nft)?,
+        campaign_end: config.campaign_end,
     })
 }
 
@@ -269,17 +283,14 @@ fn query_dynamic_attributes_nft_info(
             .addr_humanize(&external_contract.sc_atom_promise_staking.unwrap())
             .unwrap()
             .to_string();
-        let staker_info: ScAtomPromiseStakingVaultsStakerResponse = deps.querier.query_wasm_smart(
+        let reward: Uint128 = deps.querier.query_wasm_smart(
             sc_atom_promise_staking_contract,
-            &ScAtomPromiseStakingVaultsQueryMsg::Staker {
+            &ScAtomPromiseStakingVaultsQueryMsg::Rewards {
                 staker: deps.api.addr_validate(&owner_of.owner).unwrap(),
             },
         )?;
 
-        res.push((
-            "scAtom_pending_reward".to_string(),
-            staker_info.pending_amount.to_string(),
-        ))
+        res.push(("scAtom_pending_reward".to_string(), reward.to_string()))
     }
 
     Ok(res)
