@@ -1,8 +1,10 @@
 use crate::{
-    msg::{ConfigResponse, MetadataResponse, SoulboundNftInfoResponse},
     state::CONFIG,
     Cw721SoulboundContract,
 };
+
+use promise_nft::soulbound_nft::{ConfigResponse, MetadataResponse, SoulboundNftInfoResponse};
+
 use cosmwasm_std::{from_binary, Deps, Env, StdResult};
 use cw721::NftInfoResponse;
 use cw721_base::msg::QueryMsg as Cw721QueryMsg;

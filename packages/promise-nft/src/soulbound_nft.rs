@@ -1,7 +1,7 @@
 use cosmwasm_schema::cw_serde;
 use cosmwasm_std::Empty;
 use cw721_base::msg::QueryMsg as Cw721QueryMsg;
-use promise_nft::nft::Trait;
+use crate::nft::Trait;
 
 #[cw_serde]
 pub enum QueryMsg {

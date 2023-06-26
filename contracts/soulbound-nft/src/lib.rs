@@ -1,4 +1,7 @@
-pub use crate::msg::QueryMsg;
+// pub use crate::msg::QueryMsg;
+
+use promise_nft::soulbound_nft::{QueryMsg, MigrateMsg};
+
 use cosmwasm_std::Empty;
 pub use cw721_base::{
     entry::{execute as _execute, query as _query},
@@ -6,7 +9,6 @@ pub use cw721_base::{
 };
 use promise_nft::nft::Metadata;
 
-pub mod msg;
 pub mod query;
 pub mod state;
 
@@ -23,7 +25,6 @@ pub type ExecuteMsg = cw721_base::ExecuteMsg<Extension, Empty>;
 pub mod entry {
     use super::*;
     use crate::{
-        msg::MigrateMsg,
         query::{query_config, query_nft_info},
         state::CONFIG,
     };

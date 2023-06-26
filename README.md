@@ -1,4 +1,9 @@
 # Promise-Nft
 
 ## Generate typescripts file
-cwtools gents contracts/soulbound-nft -o build
+cosmwasm-ts-codegen generate \                                                                                               [16:52:37]
+          --plugin client \
+          --schema ./schema \
+          --out ./build \
+          --name soulbound_nft \
+          --no-bundle
