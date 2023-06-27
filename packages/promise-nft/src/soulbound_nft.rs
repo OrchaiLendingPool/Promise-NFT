@@ -1,31 +1,43 @@
-use cosmwasm_schema::cw_serde;
+use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Empty;
+use cw20::MinterResponse;
+use cw721::{OwnerOfResponse, NumTokensResponse, AllNftInfoResponse, ContractInfoResponse, TokensResponse};
 use cw721_base::msg::QueryMsg as Cw721QueryMsg;
 use crate::nft::Trait;
 
 #[cw_serde]
+#[derive(QueryResponses)]
 pub enum QueryMsg {
+    #[returns(ConfigResponse)]
     Config {},
+    #[returns(OwnerOfResponse)]
     OwnerOf {
         token_id: String,
     },
+    #[returns(NumTokensResponse)]
     NumTokens {},
+    #[returns(ContractInfoResponse)]
     ContractInfo {},
+    #[returns(SoulboundNftInfoResponse)]
     NftInfo {
         token_id: String,
     },
+    #[returns(AllNftInfoResponse<Empty>)]
     AllNftInfo {
         token_id: String,
     },
+    #[returns(TokensResponse)]
     Tokens {
         owner: String,
         start_after: Option<String>,
         limit: Option<u32>,
     },
+    #[returns(TokensResponse)]
     AllTokens {
         start_after: Option<String>,
         limit: Option<u32>,
     },
+    #[returns(MinterResponse)]
     Minter {},
 }
 
