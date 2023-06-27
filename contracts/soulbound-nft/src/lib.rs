@@ -1,6 +1,6 @@
 // pub use crate::msg::QueryMsg;
 
-use promise_nft::soulbound_nft::{QueryMsg, MigrateMsg};
+use promise_nft::soulbound_nft::{MigrateMsg, QueryMsg};
 
 use cosmwasm_std::Empty;
 pub use cw721_base::{

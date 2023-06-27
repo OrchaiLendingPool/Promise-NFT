@@ -15,12 +15,10 @@ use crate::{
 use cw721_base::InstantiateMsg as Cw721InstantiateMsg;
 
 use promise_nft::{
-    external::{
-        ScAtomPromiseStakingVaultsQueryMsg, ScAtomPromiseStakingVaultsStakerResponse,
-        SoulboundNftQueryMsg,
-    },
+    external::{ScAtomPromiseStakingVaultsQueryMsg, SoulboundNftQueryMsg},
     hub::{
-        ConfigResponse, ExecuteMsg, ExternalContractResponse, InstantiateMsg, MigrateMsg, QueryMsg,
+        ConfigResponse, ExecuteMsg, ExternalContractResponse, InstantiateMsg, MigrateMsg,
+        NftInfoResponse, QueryMsg,
     },
     nft::Metadata,
 };
@@ -296,9 +294,12 @@ fn query_dynamic_attributes_nft_info(
     Ok(res)
 }
 
-fn query_nft_info(deps: Deps) -> StdResult<NftInfo> {
+fn query_nft_info(deps: Deps) -> StdResult<NftInfoResponse> {
     let nft_info = NFT_INFO.load(deps.storage)?;
-    Ok(nft_info)
+    Ok(NftInfoResponse {
+        token_uri: nft_info.token_uri,
+        extension: nft_info.extension,
+    })
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]

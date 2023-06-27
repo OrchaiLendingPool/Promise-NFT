@@ -1,4 +1,4 @@
-use cosmwasm_schema::cw_serde;
+use cosmwasm_schema::{cw_serde, QueryResponses};
 use cosmwasm_std::Addr;
 
 use crate::nft::Metadata;
@@ -33,10 +33,15 @@ pub enum ExecuteMsg {
 pub enum Cw20HookMsg {}
 
 #[cw_serde]
+#[derive(QueryResponses)]
 pub enum QueryMsg {
+    #[returns(Vec<(String, String)>)]
     DynamicAttributesNftInfo { token_id: String },
+    #[returns(NftInfoResponse)]
     NftInfo {},
+    #[returns(ConfigResponse)]
     Config {},
+    #[returns(ExternalContractResponse)]
     ExternalContract {},
 }
 
@@ -53,5 +58,10 @@ pub struct ExternalContractResponse {
     pub sc_atom_promise_staking: Option<Addr>,
 }
 
+#[cw_serde]
+pub struct NftInfoResponse {
+    pub token_uri: Option<String>,
+    pub extension: Option<Metadata>,
+}
 #[cw_serde]
 pub struct MigrateMsg {}
